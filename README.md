@@ -24,8 +24,7 @@ I elaborate more on these principles in the video tutorial: https://youtu.be/i-H
 
 ### AUTHORS:
 The tutorial is being developed by Dr. Andrey Churkin, Dyson School of Design Engineering, Imperial College London.
-For more information, please visit my YouTube channel: https://www.youtube.com/@chuscience
-And my website: https://andreychurkin.ru/
+For more information, please visit my YouTube channel https://www.youtube.com/@chuscience and my website https://andreychurkin.ru/
 
 ### REFERENCES:
 To be added...
