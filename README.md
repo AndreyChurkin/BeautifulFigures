@@ -9,6 +9,11 @@ Creating high-quality figures for research papers is a difficult and time-consum
 
 This repository shares the author's experience in creating beautiful vector-based figures tailored specifically for research papers. Several simple yet elegant figures are presented, with code examples in Julia and Python. For each figure, multiple plotting parameters are fine-tuned to ensure readability, colour harmony, minimalism, and consistency of the graphics.
 
+For example, in Julia......
+<p align="center">
+  <img src="beautiful_figure_example_final.png" alt="Beautiful Figure Example" width="600">
+</p>
+
 ### PRINCIPLES OF BEAUTIFUL FIGURES:
 There are a few design principles you can follow when creating beautiful figures for research papers:
 - **The overall quality** → Use vector graphics (e.g., SVG, PDF) for pixel-free, scalable, publication-ready figures  
