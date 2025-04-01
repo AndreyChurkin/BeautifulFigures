@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="beautiful_figures_logo_v1.svg" alt="Beautiful Figures Logo" height="80">
+  <img src="beautiful_figures_logo_v1.svg" alt="Beautiful Figures Logo" height="200">
 </p>
 
 # BeautifulFigures
@@ -19,6 +19,7 @@ There are a few design principles you can follow when creating beautiful figures
 - **Consistent style** → Maintain consistent fonts, colours and formatting across all figures  
 - **To avoid** → Pie charts and 3D plots — they often mislead the reader and make it difficult to analyse data 
 - **Time** → Allocate enough time to make a good figure — iterate, refine, and polish
+  
 I elaborate more on these principles in the video tutorial: https://youtu.be/i-HAjex6VtM?si=p-n55VHc-3SOQAsG
 
 ### AUTHORS:
