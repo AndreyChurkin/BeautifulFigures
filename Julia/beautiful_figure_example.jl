@@ -1,6 +1,7 @@
 """
 This example demonstrates how to create a beautiful figure using the Julia Plots.jl package.
-- Multiple plotting parameters are fine-tuned to produce a clean, publication-ready figure:
+
+Multiple plotting parameters are fine-tuned to produce a clean, publication-ready figure:
 - We adjust the figure size and the X/Y axis ranges.
 - We set the font style and size for readability.
 - We modify the layout by adjusting plot margins, adding a frame, and setting an equal aspect ratio.
@@ -405,6 +406,6 @@ display(beautiful_plot)
 
 # # Exporting the figure:
 figure_name = "beautiful_figure_example"
-savefig(figure_name*".png") # <-- saving as PNG is not ideal for publications
+savefig(figure_name*".png") # <-- saving as PNG (raster graphic) is not ideal for publications
 savefig(figure_name*".svg") # <-- vector-based image, great for publications and further editing
 savefig(figure_name*".pdf") # <-- vector-based image, great for publications and further editing

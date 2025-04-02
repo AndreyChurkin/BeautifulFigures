@@ -12,8 +12,9 @@ Such a default plotting can lead to several issues when preparing figures for a 
 - The weights of lines may be inadequate. For example, some lines may be overly thin or thick.
 - Similarly, the size of markers may be inconsistent.
 - The default colours may not work well for our data. We may need to select another colour scheme.
+- The legend may be misplaced, overlapping with data or taking excessive space outside the figure canvas.
 
-To avoid these problems, we fine-tune the plotting parameters in beautiful_figure_example.jl
+To avoid these problems, we fine-tune the plotting parameters in 'beautiful_figure_example.jl'
 
 Andrey Churkin https://andreychurkin.ru/
 
@@ -310,7 +311,7 @@ display(not_very_beautiful_plot)
 
 # # Exporting the figure:
 figure_name = "not_a_very_beautiful_figure_example"
-savefig(figure_name*".png") # <-- saving as PNG is not ideal for publications
+savefig(figure_name*".png") # <-- <-- saving as PNG (raster graphic) is not ideal for publications
 # savefig(figure_name*".pdf") # <-- vector-based image, great for publications and further editing
 # savefig(figure_name*".svg") # <-- vector-based image, great for publications and further editing
 
