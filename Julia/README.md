@@ -3,21 +3,42 @@
 To understand the beauty and effectiveness of visualisation, let's consider two figures created using the Plots.jl package in Julia: 1) one created with default plotting settings and 2) the other with carefully tuned plotting parameters and post-processing.
 
 ### Example 1:
-`not_a_very_beautiful_figure_example.jl` ...
+Let's start with an easy approach where we drop our data into the plotting function using only the default plotting settings. That is, we do not customise fonts, colours or layout.
+This simple default plotting is done in `not_a_very_beautiful_figure_example.jl`. The resulting figure looks as follows:
 <p align="center">
   <img src="not_a_very_beautiful_figure_example_for_readme.png" alt="Not Beautiful Figure Example" width="600">
 </p>
-
+Even though we cannot claim that this figure is ugly or ineffective, it does have a number of flaws. Specifically, when used in a manuscript, this figure can lead to the following problems:
+- The figure size may be arbitrary, and the aspect ratio may not suit the layout of a paper.
+- The image resolution (in pixels) may be too low, causing problems when exporting or resizing.
+- When saved as a PNG file, the figure will have pixels and lack the sharpness of vector graphics.
+- The default font may not be ideal for a scientific publication.
+- Also, the font might be small, which creates readability/visibility problems in the manuscript.
+- The weights of lines may be inadequate. For example, some lines may be overly thin or thick.
+- Similarly, the size of markers may be inconsistent.
+- The default colours may not work well for our data. We may need to select another colour scheme.
+- The legend may be misplaced, overlapping with data or taking excessive space outside the figure canvas.
 
 ### Example 2:
-`beautiful_figure_example.jl` ...
-<p align="center">
-  <img src="purple_teal_palette.png" alt="Purple Teal Palette" width="600">
-</p>
+To avoid the above problems, we fine-tune the plotting parameters in `beautiful_figure_example.jl`. Specifically, the following adjustments are made when creating the figure in Plots.jl:
+- We adjust the figure size and the X/Y axis ranges.
+- We set the font style and size for readability.
+- We modify the layout by adjusting plot margins, adding a frame, and setting an equal aspect ratio.
+- We control grid lines and axis ticks.
+- We select a harmonious, minimalistic colour scheme for all markers and lines.
+- We adjust the line widths and the size of the markers.
+- We manually reposition the legend in vector graphics software so that it displays compactly above the plotting area.
 
+Finally, we export the figure in PDF and SVG formats (vector-based graphics), which will allow us to use it in a manuscript without loss of quality. The resulting figure looks as follows:
 <p align="center">
   <img src="beautiful_figure_example_for_readme.png" alt="Beautiful Figure Example" width="600">
 </p>
+
+Note that during the designing process, we selected the "Purple Teal tones" colour palette as the basis for our visualisation code. This palette, partially inspired by nature, allows us to create a minimalistic yet distinctive colour scheme for our data:
+<p align="center">
+  <img src="purple_teal_palette.png" alt="Purple Teal Palette" width="600">
+</p>
+https://www.color-hex.com/color-palette/106106
 
 
 ### Comparison:
