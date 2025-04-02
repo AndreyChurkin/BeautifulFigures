@@ -48,7 +48,7 @@ When working on a single manuscript, all our figures should follow the style def
 ### Comparison:
 Now, let’s compare the two figures in a realistic setting: placed side by side in a two-column journal template.
 <p align="center">
-  <img src="manuscript_screenshot_with_two_figures.png" alt="Screenshot of two figures" width="600">
+  <img src="manuscript_screenshot_with_two_figures.png" alt="Screenshot of two figures" width="1000">
 </p>
 The differences between the plotting parameters become clear now. We can see how the optimised layout helps us to better display data and makes the figure larger and more readable. 
 
