@@ -63,7 +63,6 @@ datasets_to_plot = ['setosa', 'virginica']
 
 
 
-
 # # Creating a not very beautiful plot with default parameters:
 fig, ax = plt.subplots() # <-- the resulting PNG figure will be 640×480 pixels by default
 ax.set_xlabel(f"{feature_names[x_col].capitalize()}")

@@ -61,41 +61,54 @@ datasets_to_plot = ['setosa', 'virginica']
 # # Defining the fonts before plotting:
 plt.rcParams.update({
     'font.family': 'Courier New',  # or try 'monospace' if you’re unsure it's installed
-    'font.size': 12,
-    'axes.titlesize': 12,
-    'axes.labelsize': 12,
-    'xtick.labelsize': 12,
-    'ytick.labelsize': 12,
-    'legend.fontsize': 12,
-    'figure.titlesize': 12
-})
+    'font.size': 20,
+    'axes.titlesize': 20,
+    'axes.labelsize': 20,
+    'xtick.labelsize': 20,
+    'ytick.labelsize': 20,
+    'legend.fontsize': 20,
+    'figure.titlesize': 20
+}) 
+# Note: when placed in a 0.9*column_width space in a IEEE journal template, 20pt will be displayed as 8pt, which matches the font size of the figure description text
 
-# # Creating a not very beautiful plot with default parameters:
-fig, ax = plt.subplots(figsize=(10, 10)) # <-- the resulting PNG figure will be 640×480 pixels by default
+# # Creating a plot and then adjusting multiple parameters to make it beautiful:
+fig, ax = plt.subplots(figsize=(10, 10))
+
 ax.set_xlabel(f"{feature_names[x_col].capitalize()}")
 ax.set_ylabel(f"{feature_names[y_col].capitalize()}")
 
 
-# plt.axis('equal')  # Keep aspect ratio equal
-# plt.gca().set_aspect('equal', adjustable='box')  # Maintain square shape
+ax.set_aspect('equal', adjustable='datalim') # Lock the square shape
 
 
 # Major grid:
-ax.grid(True, which='major', linestyle='-', linewidth=0.5, alpha=0.25)
+ax.grid(True, which='major', linestyle='-', linewidth=0.75, alpha=0.25)
 
 # Minor ticks and grid:
 ax.minorticks_on()
-ax.grid(True, which='minor', linestyle='-', linewidth=0.25, alpha=0.25)
+ax.grid(True, which='minor', linestyle='-', linewidth=0.25, alpha=0.15)
 
 ax.set_axisbelow(True) # <-- Ensure grid is below data
 
 
-# #  https://www.color-hex.com/color-palette/106106 <-- This is an interesting colour palette that we will use as a basis
+
+# # Now let's work on the colours:
+
+# # https://www.color-hex.com/color-palette/106106 <-- This is an interesting colour palette that we will use as a basis
 # # Let's define colours for the datasets ['setosa', 'versicolor', 'virginica']:
 dataset_colors = ['#9671bd', '#7e7e7e', '#77b5b6'] 
 dataset_line_colors = ['#6a408d', '#4e4e4e', '#378d94']
 
+# # And the colour for the lines (regressions):
+regression_color = '#8a8a8a' # <-- neutral grey
+# regression_color = '#7f9fa1' # <-- greyish seafoam
+
+
+
 # # Plotting in a loop for each dataset:
+all_data_x_to_plot = [] 
+all_data_y_to_plot = []
+regression_flag = 0 # control plotting of regression labels
 for class_name in datasets_to_plot:
     class_index = list(target_names).index(class_name)  # Get correct label
     class_mask = y_target == class_index
@@ -105,17 +118,23 @@ for class_name in datasets_to_plot:
     # Scatter plot:
     ax.scatter(data_x, data_y, 
                label = class_name.capitalize(),
-               s = 50,
+               s = 90,
                color = dataset_colors[class_index],
                edgecolors = dataset_line_colors[class_index],
-               linewidths = 1.5
+               linewidths = 1.5,
+               zorder = 3
     )
 
     # Linear regression:
     lin_model = LinearRegression().fit(data_x, data_y)
-    x_range = np.linspace(data_x.min() - 1.0, data_x.max() + 1.0, 100).reshape(-1, 1)
+    x_range = np.linspace(data_x.min() - 10.0, data_x.max() + 10.0, 100).reshape(-1, 1)
     y_pred_linear = lin_model.predict(x_range)
-    ax.plot(x_range, y_pred_linear, label=f"{class_name.capitalize()} LR")
+    ax.plot(x_range, y_pred_linear, 
+            label="LR" if regression_flag == 0 else "_nolegend_",
+            linewidth = 2.6,
+            color = regression_color,
+            zorder = 2 # use the z-order to force scatter to be displayed over lines
+    )
 
     # Polynomial regression:
     poly = PolynomialFeatures(polynomial_degree)
@@ -123,13 +142,64 @@ for class_name in datasets_to_plot:
     poly_model = LinearRegression().fit(data_x_poly, data_y)
     x_range_poly = poly.transform(x_range)
     y_pred_poly = poly_model.predict(x_range_poly)
-    ax.plot(x_range, y_pred_poly, label=f"{class_name.capitalize()} PR (degree {polynomial_degree})")
+    ax.plot(x_range, y_pred_poly, 
+            label="PR" if regression_flag == 0 else "_nolegend_",
+            linewidth = 2.6,
+            color = regression_color,
+            linestyle = '--',
+            zorder = 2
+    )
 
-ax.legend() # adding the legend
+    # Tracking which data we plot to adjust plotting limits later:
+    all_data_x_to_plot.extend(data_x)
+    all_data_y_to_plot.extend(data_y)
+
+    regression_flag += 1
+    
+
+
+# # Setting the legend:
+handles, labels = ax.get_legend_handles_labels() # get all legend items
+desired_order = [0, 3, 1, 2]  # change the order of legend elements
+
+ax.legend(
+    [handles[i] for i in desired_order],
+    [labels[i] for i in desired_order],
+    loc = 'upper center',
+    bbox_to_anchor = (0.5, 1.10),  # center top, above axes
+    ncol = 4,                      # spread horizontally
+    frameon = False                # removes legend border
+) 
+
+
+
+# # Define how much to zoom out from the data plotting range (cm):
+# zoom_out = 0.5
+zoom_out = 0.6
+# zoom_out = 1.0
+
+x_min = min(all_data_x_to_plot)
+x_max = max(all_data_x_to_plot)
+x_median = (x_min + x_max)/2
+x_range = x_max - x_min
+
+y_min = min(all_data_y_to_plot)
+y_max = max(all_data_y_to_plot)
+y_median = (y_min + y_max)/2
+y_range = y_max - y_min
+
+plotting_range = max([x_range, y_range]) + zoom_out
+
+# # Set the new plotting limits explicitly
+ax.set_xlim(x_median - plotting_range/2, x_median + plotting_range/2)
+ax.set_ylim(y_median - plotting_range/2, y_median + plotting_range/2)
 
 
 
 # # Save and show the figure:
+# plt.tight_layout() # <-- automatically adjust spacing between subplots and elements
+""" Warning: tight_layout() can make the plotting area not square (setting an arbitrary size) """
+
 plt.savefig("beautiful_figure_python.png", dpi=100) # <-- saving as PNG (raster graphic) is not ideal for publications
 plt.savefig("beautiful_figure_python.pdf") # <-- vector-based image, great for publications and further editing
 plt.savefig("beautiful_figure_python.svg") # <-- vector-based image, great for publications and further editing
