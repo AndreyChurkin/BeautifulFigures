@@ -251,6 +251,7 @@ end
 
 # # Select the datasets to visualise:
 # datasets_to_plot = ["Iris setosa"]
+# datasets_to_plot = ["Iris versicolor"]
 # datasets_to_plot = ["Iris setosa", "Iris versicolor", "Iris virginica"]
 datasets_to_plot = ["Iris setosa", "Iris virginica"]
 
@@ -350,7 +351,8 @@ for vis_dataset = 1:size(datasets_to_plot)[1]
         dataset_linecolor = "#6a408d"
     elseif dataset_name == "Iris versicolor"
         Data0 = deepcopy(VersicolorData) 
-        dataset_color = palette(:tab10)[8]
+        dataset_color = "#7e7e7e"
+        dataset_linecolor = "#4e4e4e"
     elseif dataset_name == "Iris virginica"
         Data0 = deepcopy(VirginicaData) 
         # dataset_color = palette(:tab10)[10]
