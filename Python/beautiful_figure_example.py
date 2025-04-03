@@ -1,5 +1,5 @@
 """
-This example demonstrates how to create a beautiful figure using the the Matplotlib library.
+This example demonstrates how to create a beautiful figure using the Matplotlib library.
 
 Multiple plotting parameters are fine-tuned to produce a clean, publication-ready figure:
 - We adjust the figure size and the X/Y axis ranges.
