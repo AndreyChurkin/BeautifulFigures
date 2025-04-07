@@ -13,7 +13,12 @@ For example, when visualising the Iris flower dataset using the Matplotlib libra
 <p align="center">
   <img src="beautiful_figure_example_python_for_readme.png" alt="Beautiful Figure Example" width="600">
 </p>
-In this example, multiple plotting parameters are fine-tuned to make the figure ideal for a two-column journal format. Specifically, the figure size and the X/Y axis ranges are modified to ensure readability. The font style and size are adjusted for academic publication. The grid lines, axis ticks, layout, margins, and size of markers are optimised to make the figure clear and easy to analyse. Finally, a harmonious minimalistic colour scheme is selected.
+In this example, multiple plotting parameters are fine-tuned to make the figure ideal for a two-column journal format. Specifically, the figure size and the X/Y axis ranges are modified to ensure readability. The font style and size are adjusted for academic publication. The grid lines, axis ticks, layout, margins, and size of markers are optimised to make the figure clear and easy to analyse. Finally, a harmonious minimalistic colour scheme is selected. 
+
+The iterative design process for this figure looks as follows:
+<p align="center">
+  <img src="visualisation_steps_python.png" alt="Visualisation Steps.png" width="1000">
+</p>
 
 ### PRINCIPLES OF BEAUTIFUL FIGURES:
 There are a few design principles you can follow when creating beautiful figures for research papers:
