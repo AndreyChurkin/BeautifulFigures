@@ -99,8 +99,8 @@ ax.legend() # adding the legend
 
 
 # # Save and show the figure:
-plt.savefig("not_a_very_beautiful_figure_python.png") # <-- saving as PNG (raster graphic) is not ideal for publications
-# plt.savefig("not_a_very_beautiful_figure_python.pdf") # <-- vector-based image, great for publications and further editing
-# plt.savefig("not_a_very_beautiful_figure_python.svg") # <-- vector-based image, great for publications and further editing
+plt.savefig("../output_figures/not_a_very_beautiful_figure_python.png") # <-- saving as PNG (raster graphic) is not ideal for publications
+# plt.savefig("../output_figures/not_a_very_beautiful_figure_python.pdf") # <-- vector-based image, great for publications and further editing
+# plt.savefig("../output_figures/not_a_very_beautiful_figure_python.svg") # <-- vector-based image, great for publications and further editing
 
 plt.show()

@@ -9,9 +9,9 @@ Creating high-quality figures for research papers is a difficult and time-consum
 
 This repository shares the author's experience in creating beautiful vector-based figures tailored specifically for research papers. Several simple yet elegant figures are presented, with code examples in Julia and Python. For each figure, multiple plotting parameters are fine-tuned to ensure readability, colour harmony, minimalism, and consistency of the graphics.
 
-For example, when visualising the Iris flower dataset using Julia’s Plots.jl package, we can produce this minimalistic yet effective figure:
+For example, when visualising the Iris flower dataset using the Matplotlib library in Python, we can produce this minimalistic yet effective figure:
 <p align="center">
-  <img src="beautiful_figure_example_final.png" alt="Beautiful Figure Example" width="600">
+  <img src="beautiful_figure_example_python_for_readme.png" alt="Beautiful Figure Example" width="600">
 </p>
 In this example, multiple plotting parameters are fine-tuned to make the figure ideal for a two-column journal format. Specifically, the figure size and the X/Y axis ranges are modified to ensure readability. The font style and size are adjusted for academic publication. The grid lines, axis ticks, layout, margins, and size of markers are optimised to make the figure clear and easy to analyse. Finally, a harmonious minimalistic colour scheme is selected.
 

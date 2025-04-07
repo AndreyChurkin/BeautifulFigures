@@ -60,7 +60,7 @@ datasets_to_plot = ['setosa', 'virginica']
 
 # # Defining the fonts before plotting:
 plt.rcParams.update({
-    'font.family': 'Courier New',  # or try 'monospace' if you’re unsure it's installed
+    'font.family': 'Courier New',  # monospace font
     'font.size': 20,
     'axes.titlesize': 20,
     'axes.labelsize': 20,
@@ -69,7 +69,9 @@ plt.rcParams.update({
     'legend.fontsize': 20,
     'figure.titlesize': 20
 }) 
-# Note: when placed in a 0.9*column_width space in a IEEE journal template, 20pt will be displayed as 8pt, which matches the font size of the figure description text
+# # Note: when placed in a 0.9*column_width space in a IEEE journal template, 20pt will be displayed as 8pt, which matches the font size of the figure description text
+
+
 
 # # Creating a plot and then adjusting multiple parameters to make it beautiful:
 fig, ax = plt.subplots(figsize=(10, 10))
@@ -78,8 +80,8 @@ ax.set_xlabel(f"{feature_names[x_col].capitalize()}")
 ax.set_ylabel(f"{feature_names[y_col].capitalize()}")
 
 
-ax.set_aspect('equal', adjustable='datalim') # Lock the square shape
 
+ax.set_aspect('equal', adjustable='datalim') # Lock the square shape
 
 # Major grid:
 ax.grid(True, which='major', linestyle='-', linewidth=0.75, alpha=0.25)
@@ -127,7 +129,7 @@ for class_name in datasets_to_plot:
 
     # Linear regression:
     lin_model = LinearRegression().fit(data_x, data_y)
-    x_range = np.linspace(data_x.min() - 10.0, data_x.max() + 10.0, 100).reshape(-1, 1)
+    x_range = np.linspace(data_x.min() - 2.0, data_x.max() + 2.0, 100).reshape(-1, 1)
     y_pred_linear = lin_model.predict(x_range)
     ax.plot(x_range, y_pred_linear, 
             label="LR" if regression_flag == 0 else "_nolegend_",
@@ -157,8 +159,11 @@ for class_name in datasets_to_plot:
     regression_flag += 1
     
 
+# # Simple legend (may not work well):
+# ax.legend() # adding the legend
 
-# # Setting the legend:
+
+# # Setting a beautiful costumised legend:
 handles, labels = ax.get_legend_handles_labels() # get all legend items
 desired_order = [0, 3, 1, 2]  # change the order of legend elements
 
@@ -197,11 +202,15 @@ ax.set_ylim(y_median - plotting_range/2, y_median + plotting_range/2)
 
 
 # # Save and show the figure:
+
 # plt.tight_layout() # <-- automatically adjust spacing between subplots and elements
 """ Warning: tight_layout() can make the plotting area not square (setting an arbitrary size) """
 
-plt.savefig("beautiful_figure_python.png", dpi=100) # <-- saving as PNG (raster graphic) is not ideal for publications
-plt.savefig("beautiful_figure_python.pdf") # <-- vector-based image, great for publications and further editing
-plt.savefig("beautiful_figure_python.svg") # <-- vector-based image, great for publications and further editing
+plt.savefig("../output_figures/beautiful_figure_python.png", dpi=100) # <-- saving as PNG (raster graphic) is not ideal for publications
+plt.savefig("../output_figures/beautiful_figure_python.pdf") # <-- vector-based image, great for publications and further editing
+plt.savefig("../output_figures/beautiful_figure_python.svg") # <-- vector-based image, great for publications and further editing
+
+# plt.savefig("../output_figures/beautiful_figure_python_step_7.png", dpi=100) # saving visualisation steps
 
 plt.show()
+

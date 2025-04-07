@@ -1,20 +1,15 @@
 """
-This example demonstrates a basic figure generated with the Julia Plots.jl package:
-- All plotting parameters are left at their defaults, with no customisation of fonts, colours, or layout
-- The figure is saved in PNG file format (raster graphic)
+This example demonstrates how to create a beautiful figure using the Julia Plots.jl package.
 
-Such a default plotting can lead to several issues when preparing figures for a manuscript:
-- The figure size may be arbitrary, and the aspect ratio may not suit the layout of a paper.
-- The image resolution (in pixels) may be too low, causing problems when exporting or resizing.
-- Since saved in PNG, the figure will have pixels and lack the sharpness of vector graphics.
-- The default font may not be ideal for a scientific publication.
-- Also, the font might be small, which creates readability/visibility problems in the manuscript.
-- The weights of lines may be inadequate. For example, some lines may be overly thin or thick.
-- Similarly, the size of markers may be inconsistent.
-- The default colours may not work well for our data. We may need to select another colour scheme.
-- The legend may be misplaced, overlapping with data or taking excessive space outside the figure canvas.
+Multiple plotting parameters are fine-tuned to produce a clean, publication-ready figure:
+- We adjust the figure size and the X/Y axis ranges.
+- We set the font style and size for readability.
+- We modify the layout by adjusting plot margins, adding a frame, and setting an equal aspect ratio.
+- We control grid lines and axis ticks.
+- We select a harmonious, minimalistic colour scheme for all markers and lines.
+- We adjust the line widths and the size of the markers.
 
-To avoid these problems, we fine-tune the plotting parameters in 'beautiful_figure_example.jl'
+Finally, we export the figure in PDF and SVG formats (vector-based graphics), which will allow us to use it in a manuscript without loss of quality.
 
 Andrey Churkin https://andreychurkin.ru/
 
@@ -256,65 +251,163 @@ end
 
 # # Select the datasets to visualise:
 # datasets_to_plot = ["Iris setosa"]
+# datasets_to_plot = ["Iris versicolor"]
 # datasets_to_plot = ["Iris setosa", "Iris versicolor", "Iris virginica"]
 datasets_to_plot = ["Iris setosa", "Iris virginica"]
 
 
 
-# # Creating a not very beautiful plot with default parameters:
-not_very_beautiful_plot = plot(
-    # title = "Not very beautiful figure",
-    xlabel = plot_x_label,
-    ylabel = plot_y_label
-) # default size will be 600×400 pixels
+# Creating a combined dataset for tuning plotting parameters later:
+global combined_datasets_to_plot = Array{Float64}(undef, 0, 4)
+for check_dataset = 1:size(datasets_to_plot)[1]
+    dataset_name = datasets_to_plot[check_dataset]
+    if dataset_name == "Iris setosa"
+        add_Data = deepcopy(SetosaData) 
+    elseif dataset_name == "Iris versicolor"
+        add_Data = deepcopy(VersicolorData) 
+    elseif dataset_name == "Iris virginica"
+        add_Data = deepcopy(VirginicaData) 
+    end
+    global combined_datasets_to_plot = vcat(combined_datasets_to_plot,add_Data)
+end
 
+
+
+# # Let's create a beautiful figure by tuning multiple plotting parameters!
+
+
+# # Set the font size for elements of the figure:
+# fz = 14 # fontsize <-- too small
+fz = 18 # fontsize <-- great for IEEE journal templates
+
+
+# # Define how much to zoom out from the data plotting range (cm):
+# zoom_out = 0.5
+zoom_out = 0.6
+# zoom_out = 1.0
+
+
+x_min = minimum(combined_datasets_to_plot[:,data_x_column])
+x_max = maximum(combined_datasets_to_plot[:,data_x_column])
+x_median = (x_min + x_max)/2
+x_range = x_max - x_min
+
+y_min = minimum(combined_datasets_to_plot[:,data_y_column])
+y_max = maximum(combined_datasets_to_plot[:,data_y_column])
+y_median = (y_min + y_max)/2
+y_range = y_max - y_min
+
+plotting_range = maximum([x_range, y_range]) + zoom_out
+
+
+# # Creating the plot (canvas), setting general plotting parameters:
+beautiful_plot = plot(
+    xlabel = plot_x_label,
+    ylabel = plot_y_label,
+
+    size = (1000,1000), # <-- width and height of the whole plot (in px)
+
+    xlim = (x_median - plotting_range/2, x_median + plotting_range/2),
+    ylim = (y_median - plotting_range/2, y_median + plotting_range/2), 
+    aspect_ratio = :equal,
+
+    xtickfontsize = fz, ytickfontsize = fz,
+    fontfamily = "Courier", 
+    titlefontsize = fz,
+    xguidefontsize = fz,
+    yguidefontsize = fz,
+    legendfontsize = fz-6,
+
+    # legend = :false,
+    legend = :true,
+
+
+    framestyle = :box,
+    margin = 10mm,
+    
+    # grid = :false,
+    grid = :true,
+
+    # minorgrid = :false,
+    minorgrid = :true,
+
+    # minorTicks = true,
+
+    xticks = 0:0.5:10, # to ensure that we have correct minor ticks
+    yticks = 0:0.5:10
+)
+
+# #  https://www.color-hex.com/color-palette/106106 <-- This is an interesting colour palette that we will use as a basis
 
 # # Plotting in a loop for each dataset:
+regression_flag = 0 # control plotting of regression labels
 for vis_dataset = 1:size(datasets_to_plot)[1]
     dataset_name = datasets_to_plot[vis_dataset]
 
     if dataset_name == "Iris setosa"
-        Data0 = deepcopy(SetosaData) 
+        Data0 = deepcopy(SetosaData)
+        # dataset_color = palette(:tab10)[5]
+        dataset_color = "#9671bd"
+        dataset_linecolor = "#6a408d"
     elseif dataset_name == "Iris versicolor"
         Data0 = deepcopy(VersicolorData) 
+        dataset_color = "#7e7e7e"
+        dataset_linecolor = "#4e4e4e"
     elseif dataset_name == "Iris virginica"
         Data0 = deepcopy(VirginicaData) 
+        # dataset_color = palette(:tab10)[10]
+        dataset_color = "#77b5b6"
+        dataset_linecolor = "#378d94"
     end
 
     global Data1 = Data0[:,[data_x_column,data_y_column]]
 
     # # Define the range for regression:
-    # X_range = range(0, 10, length=100) 
-    X_range = range(minimum(Data0[:,1])-1, maximum(Data0[:,1])+1, length=100)
+    X_range = range(0, 10, length=100) 
+    # X_range = range(minimum(Data0[:,1])-1, maximum(Data0[:,1])+1, length=100)
 
-    scatter!(not_very_beautiful_plot,
-            Data1[1:end,data_x_column], Data1[1:end,data_y_column], 
-            label = dataset_name
-    )
-
-    plot!(not_very_beautiful_plot,
+    plot!(beautiful_plot,
         X_range,
         my_linear_regression(Data1, X_range),
-        label = "Linear regression"
+        # label = "LR",
+        label = regression_flag == 0 ? "LR" : false,
+        # color = palette(:tab10)[8], # grey from the default palette
+        color = RGB(0.3, 0.3, 0.3), # grey defined manually via RGB components
+        w = 4
     )
 
-    plot!(not_very_beautiful_plot,
+    plot!(beautiful_plot,
         X_range,
         my_polynomial_regression(Data1, X_range, polynomial_degree),
-        label = "Polynomial regression"
+        # label = "PR",
+        label = regression_flag == 0 ? "PR" : false,
+        # color = palette(:tab10)[8], # grey from the default palette
+        color = RGB(0.3, 0.3, 0.3), # grey defined manually via RGB components
+        w = 4,
+        linestyle = :dash
     )
 
+    scatter!(beautiful_plot,
+        Data1[1:end,data_x_column], Data1[1:end,data_y_column], 
+        label = dataset_name,
+        markersize = 8,
+        markerstrokewidth = 1.5,
+        color = dataset_color,
+
+        # color = RGB(184/255, 204/255, 234/255) # PANTONE 2708 C #b8ccea
+        # color = RGB(204/255, 234/255, 184/255) # CCEAB8
+
+        markerstrokecolor = dataset_linecolor
+    )
+
+    global regression_flag += 1
 end
 
 
-display(not_very_beautiful_plot)
+display(beautiful_plot)
 
 # # Exporting the figure:
-figure_name = "not_a_very_beautiful_figure_example"
-savefig(figure_name*".png") # <-- <-- saving as PNG (raster graphic) is not ideal for publications
-# savefig(figure_name*".pdf") # <-- vector-based image, great for publications and further editing
-# savefig(figure_name*".svg") # <-- vector-based image, great for publications and further editing
-
-
-
-
+figure_name = "beautiful_figure_example"
+savefig("../output_figures/"*figure_name*".png") # <-- saving as PNG (raster graphic) is not ideal for publications
+savefig("../output_figures/"*figure_name*".svg") # <-- vector-based image, great for publications and further editing
+savefig("../output_figures/"*figure_name*".pdf") # <-- vector-based image, great for publications and further editing
