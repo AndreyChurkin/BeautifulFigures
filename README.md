@@ -25,7 +25,7 @@ There are a few design principles you can follow when creating beautiful figures
 - **The overall quality** → Use vector graphics (e.g., SVG, PDF) for pixel-free, scalable, publication-ready figures  
 - **Readability** → Use clear fonts of proper sizes and optimise the layout of figures
 - **Simplify and declutter** → Remove unnecessary elements, make your figure simple and effective
-- **Colours** → use fewer colours, apply colours strategically and select harmonious color schemes
+- **Colours** → Use fewer colours, apply colours strategically and select harmonious colour schemes
 - **Message and story** → Think about the message or story of your figure. What do you want to tell the reader? 
 - **Consistent style** → Maintain consistent fonts, colours and formatting across all figures  
 - **To avoid** → Avoid pie charts and 3D plots (they often mislead the reader and make it difficult to analyse data)
