@@ -36,6 +36,12 @@ Finally, we export the figure in PDF and SVG formats (vector-based graphics), wh
   <img src="beautiful_figure_example_python_for_readme.png" alt="Beautiful Figure Example Python" width="600">
 </p>
 
+
+When developing this figure, we went through several iterations following the design principles. At each iteration, we tuned specific plotting parameters to improve the overall quality and readability of the figure:
+<p align="center">
+  <img src="visualisation_steps_python.png" alt="Visualisation Steps.png" width="1000">
+</p>
+
 Note that during the design process, we selected the "Purple Teal tones" colour palette as the basis for our visualisation style. This palette, partially inspired by nature, allows us to create a minimalistic yet distinctive colour scheme for our data:
 <p align="center">
   <img src="purple_teal_palette.png" alt="Purple Teal Palette" width="600">
