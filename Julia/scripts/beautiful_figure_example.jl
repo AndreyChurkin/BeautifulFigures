@@ -363,8 +363,8 @@ for vis_dataset = 1:size(datasets_to_plot)[1]
     global Data1 = Data0[:,[data_x_column,data_y_column]]
 
     # # Define the range for regression:
-    X_range = range(0, 10, length=100) 
-    # X_range = range(minimum(Data0[:,1])-1, maximum(Data0[:,1])+1, length=100)
+    X_range = range(0, 10, length=100)
+    # X_range = range(minimum(Data1[:,1])-1, maximum(Data1[:,1])+1, length=100)
 
     plot!(beautiful_plot,
         X_range,
@@ -388,7 +388,7 @@ for vis_dataset = 1:size(datasets_to_plot)[1]
     )
 
     scatter!(beautiful_plot,
-        Data1[1:end,data_x_column], Data1[1:end,data_y_column], 
+        Data1[1:end,1], Data1[1:end,2],
         label = dataset_name,
         markersize = 8,
         markerstrokewidth = 1.5,
