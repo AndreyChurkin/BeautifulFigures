@@ -38,7 +38,7 @@ There are a few design principles you can follow when creating beautiful figures
 - **Message and story** → Think about the message or story of your figure. What do you want to tell the reader? 
 - **Consistent style** → Maintain consistent fonts, colours and formatting across all figures  
 - **To avoid** → Avoid pie charts and 3D plots (they often mislead the reader and make it difficult to analyse data)
-- **Time** → Allocate enough time to make a good figure — iterate, refine, and polish
+- **Time** → Allocate enough time to make a good figure. Plan for many iterations.
   
 I elaborate more on these principles in the video tutorial: https://youtu.be/i-HAjex6VtM?si=p-n55VHc-3SOQAsG
 
