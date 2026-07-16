@@ -9,7 +9,16 @@ Creating high-quality figures for research papers is a difficult and time-consum
 
 This repository shares the author's experience in creating beautiful vector-based figures tailored specifically for research papers. Several simple yet elegant figures are presented, with code examples in Julia and Python. For each figure, multiple plotting parameters are fine-tuned to ensure readability, colour harmony, minimalism, and consistency of the graphics.
 
-For example, when visualising the Iris flower dataset using the Matplotlib library in Python, we can produce this minimalistic yet effective figure:
+### REPOSITORY STRUCTURE:
+This repository is organised as a growing collection of examples. Each example has its own folder with code in Julia/Python. So far, the project includes the following visualisation cases:
+- `01_main_simple_example/` — a simple scatter plot with regression lines (Iris dataset)
+- `02_3d_price_surface/` — a 3D day-ahead electricity price surface (real ENTSO-E market data)
+
+More examples (diagrams, network graphs, etc.) will be added over time.
+
+### EXAMPLE:
+
+When visualising the Iris flower dataset using the Matplotlib library in Python, we can produce this minimalistic yet effective figure:
 <p align="center">
   <img src="beautiful_figure_example_python_for_readme.png" alt="Beautiful Figure Example" width="600">
 </p>
