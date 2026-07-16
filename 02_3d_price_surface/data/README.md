@@ -27,5 +27,5 @@ This data originates from the ENTSO-E Transparency Platform and is redistributed
 
 ⚠️ The licence of this repository's **code** does **not** apply to the data in this folder.
 
-- **Code** in this repository is licensed under the MIT License — see the `LICENSE` file in the repository root.
-- **Data** in this folder remains subject to **ENTSO-E's data reuse terms**, as   described above. It is included here for reproducibility only.
+- **Code** in this repository is licensed under the MIT License (see the `LICENSE` file in the repository root).
+- **Data** in this folder remains subject to **ENTSO-E's data reuse terms**, as described above. It is included here for reproducibility only.
