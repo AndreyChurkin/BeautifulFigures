@@ -10,12 +10,21 @@ Yet, a well-made 3D plot can create a WOW effect, instantly showing how interest
 In this case, 3D is used to create a dramatic visualisation of the difference between calm prices and peaks.
 
 Multiple plotting parameters are fine-tuned to achieve this and produce a clean, publication-ready figure:
-- to be added....
--
--
+● We select a single coherent colour palette (deep purple through magenta/red to bright orange).
+  The price magnitude reads as one continuous "temperature", not arbitrary categorical colours.
+● We tune the colour of every other plot element: background, gridlines, ticks and labels, etc.
+● We choose how each facet's colour is computed from its four corner values (FACET_COLOUR_RULE).
+● We control whether directional lighting/shading is applied on top of the facet colours (USE_SHADES).
+● We set the font style and size independently for the title, subtitle, axis labels and tick labels.
+● We set the figure size, and resize/zoom the 3D box to fill the canvas.
+● We define paddings (gaps) between the plot elements.
+● We control the grid lines and axis ticks.
 
 The figure is saved in PDF and SVG formats (vector-based graphics), 
 which will allow us to use it in a manuscript without loss of quality.
+
+The same price surface is also visualised in `not_a_very_beautiful_3d_price_surface.py` 
+to show how default plotting parameters may produce a less effective visualisation.
 
 Andrey Churkin https://andreychurkin.ru/
 
@@ -26,6 +35,7 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg") # force non-interactive Agg backend so that the script never tries to pop up a GUI window
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 import numpy as np
 import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap, Normalize, PowerNorm, to_rgb, to_rgba
@@ -39,7 +49,7 @@ matplotlib.rcParams["font.family"] = ["Courier New", "monospace"]
 # ============================================================
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-DATA_DIR = SCRIPT_DIR.parent.parent / "data"  # ../../data, shared at the example level (not under Python/)
+DATA_DIR = SCRIPT_DIR.parent.parent / "data"
 OUTPUT_DIR = SCRIPT_DIR.parent / "output_figures"
 
 
@@ -69,14 +79,26 @@ AXIS_LABEL_FONTSIZE = 13
 TICK_LABEL_FONTSIZE = 11
 
 # Color scale: 
-#   Use USE_NONLINEAR_NORM = False for a plain linear scale
-#   Use USE_NONLINEAR_NORM = True for a PowerNorm gamma-compresses nonlinear color mapping 
+#  - Use USE_NONLINEAR_NORM = False for a plain linear scale
+#  - Use USE_NONLINEAR_NORM = True for a PowerNorm gamma-compresses nonlinear color mapping 
 USE_NONLINEAR_NORM = False
 GAMMA = 0.6  # <1 boosts contrast in the low/mid range, >1 boosts the high end, 1 == linear
 
+# Facet colour rule - how each polygon's colour is computed from its 4 corner Z-values:
+#   "mean" -> matplotlib's default flat shading (colours each facet by the average of its 4 corners).
+#             A single-cell spike's facet colour is pulled toward its neighbours and never reaches the true max.
+#   "max"  -> colours each facet by the maximum of its 4 corners instead.
+#             The true data peak's colour actually reaches the colormap's endpoint.
+# FACET_COLOUR_RULE = "mean"
+FACET_COLOUR_RULE = "max"
+
+# Whether to apply matplotlib's directional-lighting shading on top of the facet colours:
+USE_SHADES = False # Off keeps colours matching the colorbar exactly
+# USE_SHADES = True
+
 # Colour settings for the dark background:
-#   Dark teal radial-gradient background
-#   Light ink and gridlines to read on it
+#  - Dark teal radial-gradient background
+#  - Light ink and gridlines to read on it
 BG_GRADIENT_CENTER = "#12302f"
 BG_GRADIENT_EDGE = "#071414"
 PRIMARY_INK = "#f2f2f0"
@@ -98,10 +120,10 @@ def load_price_grid(dataset: str, start_date: str, end_date: str):
     df = pd.read_csv(dataset_path)
     zone = df["Area"].iloc[0].removeprefix("BZN|")
 
-    # "MTU (CET/CEST)" is "start - end" in local wall-clock time. Right around
-    # DST transitions ENTSO-E appends an explicit "(CET)"/"(CEST)" suffix to
-    # disambiguate the spring-forward gap and the autumn fall-back doubled
-    # hour - strip it, since only the plain local start time is needed here.
+    # "MTU (CET/CEST)" is "start - end" in local time. 
+    # Right around DST transitions ENTSO-E appends an explicit "(CET)"/"(CEST)" suffix 
+    # to disambiguate the spring-forward gap and the autumn fall-back doubled hour.
+    # Strip it, since only the plain local start time is needed here.
     start_str = (df["MTU (CET/CEST)"].str.split(" - ").str[0]
                  .str.split(" (", regex=False).str[0])
     timestamp = pd.to_datetime(start_str, format="%d/%m/%Y %H:%M:%S")
@@ -124,15 +146,14 @@ def load_price_grid(dataset: str, start_date: str, end_date: str):
     # any republished ("Sequence 2" etc.) duplicate rows sharing the same MTU.
     grid = tmp.pivot_table(index="day", columns="tod", values="price", aggfunc="mean")
 
-    # Resolution isn't consistent across exports (hourly in older files,
-    # 15-minute in newer ones) - infer the step from the data instead of
-    # hardcoding one.
+    # Resolution isn't consistent across exports (hourly in older files, 15-minute in newer ones).
+    # Infer the step from the data.
     cols = np.sort(grid.columns.values)
     step = np.diff(cols).min() if len(cols) > 1 else 1.0
     grid = grid.reindex(columns=np.arange(0, 24, step)).sort_index()
+
     # The spring-forward DST date is missing its skipped local hour's cell(s).
-    # For this single decorative figure we interpolate it so the surface
-    # renders without a hole - a display choice, not for data-integrity CSVs.
+    # For this figure we interpolate it so the surface renders without a hole.
     grid = grid.interpolate(axis=1, limit_direction="both")
 
     dates = pd.to_datetime(grid.index)
@@ -163,8 +184,8 @@ def build_radial_gradient(width: int, height: int, center_color: str, edge_color
     return center_rgb * (1 - dist) + edge_rgb * dist
 
 
-def plot_price_surface(day_grid, hour_grid, price_grid, dates, zone, out_path):
-    start, end = dates.min(), dates.max()  # actual plotted range, not the requested START_DATE/END_DATE
+def plot_price_surface(day_grid, hour_grid, price_grid, dates, zone, out_path, FACET_COLOUR_RULE, USE_SHADES):
+    start, end = dates.min(), dates.max()
 
     fig = plt.figure(figsize=(8, 6))
     fig.patch.set_facecolor(BG_GRADIENT_EDGE)
@@ -181,22 +202,41 @@ def plot_price_surface(day_grid, hour_grid, price_grid, dates, zone, out_path):
     # Then, we can zoom the 3D box itself to fill more of that rectangle.
     ax.set_box_aspect(None, zoom=1.1)
 
-    # plot_surface colors each face by the mean of its 4 corner Z-values (flat shading), not by vertex height.
-    # So, a single-cell spike's face color is pulled toward its neighbors and never reaches the true max.
     # This norm (built from the real data range) keeps the colorbar honest.
     if USE_NONLINEAR_NORM:
         color_norm = PowerNorm(gamma=GAMMA, vmin=price_grid.min(), vmax=price_grid.max())
     else:
         color_norm = Normalize(vmin=price_grid.min(), vmax=price_grid.max())
 
-    surf = ax.plot_surface(
+    price_cmap = build_price_cmap()
+
+    # Facet colour is computed manually and passed via facecolors (rather than letting plot_surface derive it from cmap+norm)
+    if FACET_COLOUR_RULE == "max":
+        # Colour each facet by the MAXIMUM of its 4 corner Z-values, instead of matplotlib's default mean-of-corners flat shading.
+        # So the true data peak's colour actually reaches the colormap's endpoint.
+        face_value = np.maximum.reduce([
+            price_grid[:-1, :-1], price_grid[1:, :-1],
+            price_grid[:-1, 1:], price_grid[1:, 1:],
+        ])
+    elif FACET_COLOUR_RULE == "mean":
+        # matplotlib's own default flat shading: a single-cell spike's facet colour is pulled toward its neighbours and never reaches the true max.
+        face_value = (price_grid[:-1, :-1] + price_grid[1:, :-1]
+                      + price_grid[:-1, 1:] + price_grid[1:, 1:]) / 4.0
+    else:
+        raise ValueError(f"Unknown FACET_COLOUR_RULE: {FACET_COLOUR_RULE!r} (expected 'mean' or 'max')")
+
+    ax.plot_surface(
         day_grid, hour_grid, price_grid,
-        cmap=build_price_cmap(),
+        facecolors=price_cmap(color_norm(face_value)),
         linewidth=0,
-        antialiased=True,
+        shade=USE_SHADES,
         rstride=1, cstride=1,
-        norm=color_norm,
     )
+
+    # facecolors bypasses plot_surface's automatic scalar mapping, providing no array for a colorbar.
+    # Building a standalone mappable carrying the same cmap/norm.
+    mappable = cm.ScalarMappable(norm=color_norm, cmap=price_cmap)
+    mappable.set_array([])
 
     # Two title lines, with two font sizes.
     # Both use fig.suptitle/fig.text (not ax.set_title) to center on the whole figure canvas.
@@ -213,7 +253,7 @@ def plot_price_surface(day_grid, hour_grid, price_grid, dates, zone, out_path):
     ax.set_ylabel("Hour of day", color=PRIMARY_INK, fontsize=AXIS_LABEL_FONTSIZE, labelpad=6)
     # No z-axis text label: the colorbar already carries the title.
 
-    # Month-start ticks spanning whatever range was actually plotted.
+    # Month-start ticks spanning the range of dates plotted:
     month_starts = pd.date_range(start.replace(day=1), end, freq="MS")
     month_positions = [(month_start - dates[0]).days for month_start in month_starts]
     ax.set_xticks(month_positions)
@@ -237,7 +277,7 @@ def plot_price_surface(day_grid, hour_grid, price_grid, dates, zone, out_path):
 
     ax.view_init(elev=30, azim=-60)
 
-    cbar = fig.colorbar(surf, ax=ax, shrink=0.6, pad=0.12)  # pad clears the axis on the right
+    cbar = fig.colorbar(mappable, ax=ax, shrink=0.6, pad=0.12)  # pad clears the axis on the right
     cbar.set_label("Price, EUR/MWh", color=PRIMARY_INK, fontsize=AXIS_LABEL_FONTSIZE, labelpad=15)
     cbar.ax.yaxis.set_tick_params(color=PRIMARY_INK, labelsize=TICK_LABEL_FONTSIZE)
     plt.setp(cbar.ax.get_yticklabels(), color=PRIMARY_INK)
@@ -254,9 +294,9 @@ if __name__ == "__main__":
     day_grid, hour_grid, price_grid, dates, zone = load_price_grid(DATASET, START_DATE, END_DATE)
 
     OUTPUT_DIR.mkdir(exist_ok=True)
-    out_path = OUTPUT_DIR / f"beautiful_3d_price_surface_{zone}_{dates.min():%Y%m%d}_{dates.max():%Y%m%d}.png"
-    plot_price_surface(day_grid, hour_grid, price_grid, dates, zone, out_path)
-    print(f"Wrote {out_path.stem}.png/.pdf/.svg to {OUTPUT_DIR}")
+    out_path = OUTPUT_DIR / f"beautiful_3d_price_surface_{zone}_{dates.min():%Y%m%d}_{dates.max():%Y%m%d}_{FACET_COLOUR_RULE}.png"
+    plot_price_surface(day_grid, hour_grid, price_grid, dates, zone, out_path, FACET_COLOUR_RULE, USE_SHADES)
+    print(f"\nSaved {out_path.stem}.png to {OUTPUT_DIR}")
 
     imax = np.unravel_index(np.argmax(price_grid), price_grid.shape)
     imin = np.unravel_index(np.argmin(price_grid), price_grid.shape)
